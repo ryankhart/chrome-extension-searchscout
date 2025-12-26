@@ -1,4 +1,6 @@
-# Custom Search Chrome Extension
+# SearchScout
+
+Search selected text across multiple engines.
 
 A Chrome extension that adds a right-click context menu to search selected text across multiple customizable search engines.
 
