@@ -55,6 +55,37 @@ body {
   background: #1557b0;
 }
 
+/* Settings Section */
+.settings-section {
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  gap: 16px;
+}
+
+.setting-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.setting-label {
+  font-weight: 500;
+  color: #202124;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.setting-description {
+  font-size: 12px;
+  color: #5f6368;
+}
+
 /* Sites List */
 .sites-list {
   flex: 1;
