@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Sites</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Search Sites</h1>
+      <button id="addBtn" class="btn-icon" title="Add new search site">+</button>
+    </header>
+
+    <main id="sitesList" class="sites-list">
+      <!-- Dynamically populated -->
+    </main>
+
+    <div id="emptyState" class="empty-state hidden">
+      <p>No search sites configured.</p>
+      <p>Click + to add one.</p>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h2 id="modalTitle">Add Search Site</h2>
+      <form id="siteForm">
+        <div class="form-group">
+          <label for="siteName">Name</label>
+          <input type="text" id="siteName" required maxlength="50" placeholder="e.g., Google">
+        </div>
+        <div class="form-group">
+          <label for="siteUrl">URL</label>
+          <input type="text" id="siteUrl" required placeholder="https://example.com/search?q=%s">
+          <span class="hint">Use %s where the search term should go</span>
+        </div>
+        <div id="errorMsg" class="error hidden"></div>
+        <div class="form-actions">
+          <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
