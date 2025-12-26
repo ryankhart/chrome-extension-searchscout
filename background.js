@@ -1,4 +1,4 @@
-import { initializeStorage, getEnabledSearchSites, getSettings } from './modules/storage.js';
+import { initializeStorage, getEnabledSearchSites } from './modules/storage.js';
 
 const PARENT_MENU_ID = 'custom-search-parent';
 let isCreatingMenu = false;
@@ -21,25 +21,26 @@ async function createContextMenu() {
     });
   });
 
-  const settings = await getSettings();
   const sites = await getEnabledSearchSites();
+  console.log('Creating context menu with', sites.length, 'enabled sites');
 
-  console.log('Creating context menu with settings:', settings);
-  console.log('Enabled sites:', sites.length);
+  if (sites.length === 0) {
+    console.log('No enabled sites, skipping menu creation');
+    return;
+  }
 
-  if (settings.useFlatMenu) {
-    console.log('Creating FLAT menu mode');
-    // Flat mode: Each site as top-level menu item
-    for (const site of sites) {
-      chrome.contextMenus.create({
-        id: site.id,
-        title: `Search ${site.name} for "%s"`,
-        contexts: ['selection']
-      });
-    }
+  if (sites.length === 1) {
+    // Single site: Create one top-level menu item
+    console.log('Creating single top-level menu item');
+    const site = sites[0];
+    chrome.contextMenus.create({
+      id: site.id,
+      title: `Search ${site.name} for "%s"`,
+      contexts: ['selection']
+    });
   } else {
-    console.log('Creating NESTED menu mode');
-    // Nested mode: Sites under parent menu
+    // Multiple sites: Create nested menu
+    console.log('Creating nested menu with', sites.length, 'items');
     chrome.contextMenus.create({
       id: PARENT_MENU_ID,
       title: 'Search for "%s"',
@@ -62,19 +63,18 @@ async function createContextMenu() {
 /**
  * Handle context menu click
  */
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  const settings = await getSettings();
+chrome.contextMenus.onClicked.addListener(async (info) => {
+  // For nested menus, only handle clicks on child items
+  // For single site, the item has no parent
+  if (info.parentMenuItemId === PARENT_MENU_ID || !info.parentMenuItemId) {
+    const sites = await getEnabledSearchSites();
+    const site = sites.find(s => s.id === info.menuItemId);
 
-  // In flat mode, items have no parent. In nested mode, check parent.
-  if (!settings.useFlatMenu && info.parentMenuItemId !== PARENT_MENU_ID) return;
-
-  const sites = await getEnabledSearchSites();
-  const site = sites.find(s => s.id === info.menuItemId);
-
-  if (site && info.selectionText) {
-    const searchText = encodeURIComponent(info.selectionText);
-    const searchUrl = site.url.replace('%s', searchText);
-    chrome.tabs.create({ url: searchUrl });
+    if (site && info.selectionText) {
+      const searchText = encodeURIComponent(info.selectionText);
+      const searchUrl = site.url.replace('%s', searchText);
+      chrome.tabs.create({ url: searchUrl });
+    }
   }
 });
 
@@ -90,7 +90,7 @@ chrome.runtime.onInstalled.addListener(async () => {
  * Rebuild context menu when storage changes
  */
 chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName === 'sync' && (changes.searchSites || changes.settings)) {
+  if (areaName === 'sync' && changes.searchSites) {
     createContextMenu();
   }
 });
