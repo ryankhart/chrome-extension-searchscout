@@ -61,5 +61,9 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   }
 });
 
-// Also create menu on service worker startup (in case it was terminated)
-createContextMenu();
+/**
+ * Recreate menu when browser starts (extension already installed)
+ */
+chrome.runtime.onStartup.addListener(() => {
+  createContextMenu();
+});
