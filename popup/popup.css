@@ -1,3 +1,15 @@
+:root {
+  /* Popup dimensions */
+  --popup-width: 350px;
+  --popup-min-height: 200px;
+  --popup-max-height: 500px;
+
+  /* Colors */
+  --primary-color: #1a73e8;
+  --primary-hover: #1557b0;
+  --focus-outline: #1a73e8;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,9 +21,9 @@ body {
   font-size: 14px;
   color: #333;
   background: #fff;
-  width: 350px;
-  min-height: 200px;
-  max-height: 500px;
+  width: var(--popup-width);
+  min-height: var(--popup-min-height);
+  max-height: var(--popup-max-height);
 }
 
 .container {
@@ -75,7 +87,7 @@ body {
 }
 
 .info-icon:focus-visible {
-  outline: 2px solid #1a73e8;
+  outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
   background: #202124;
 }
@@ -121,7 +133,7 @@ body {
   height: 28px;
   border: none;
   border-radius: 50%;
-  background: #1a73e8;
+  background: var(--primary-color);
   color: white;
   font-size: 18px;
   cursor: pointer;
@@ -132,11 +144,11 @@ body {
 }
 
 .btn-icon:hover {
-  background: #1557b0;
+  background: var(--primary-hover);
 }
 
 .btn-icon:focus-visible {
-  outline: 2px solid #1a73e8;
+  outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
 }
 
@@ -271,7 +283,7 @@ body {
 }
 
 .toggle input:checked + .toggle-slider {
-  background-color: #1a73e8;
+  background-color: var(--primary-color);
 }
 
 .toggle input:checked + .toggle-slider:before {
@@ -279,7 +291,7 @@ body {
 }
 
 .toggle input:focus-visible + .toggle-slider {
-  outline: 2px solid #1a73e8;
+  outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
 }
 
@@ -320,7 +332,7 @@ body {
 }
 
 .btn-action:focus-visible {
-  outline: 2px solid #1a73e8;
+  outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
 }
 
@@ -393,7 +405,7 @@ body {
 
 .form-group input:focus {
   outline: none;
-  border-color: #1a73e8;
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
 }
 
@@ -431,23 +443,23 @@ body {
 }
 
 .btn-primary {
-  background: #1a73e8;
+  background: var(--primary-color);
   color: white;
   border: none;
 }
 
 .btn-primary:hover {
-  background: #1557b0;
+  background: var(--primary-hover);
 }
 
 .btn-primary:focus-visible {
-  outline: 2px solid #1a73e8;
+  outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
 }
 
 .btn-secondary {
   background: white;
-  color: #1a73e8;
+  color: var(--primary-color);
   border: 1px solid #dadce0;
 }
 
@@ -456,7 +468,7 @@ body {
 }
 
 .btn-secondary:focus-visible {
-  outline: 2px solid #1a73e8;
+  outline: 2px solid var(--focus-outline);
   outline-offset: 2px;
 }
 
