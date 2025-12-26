@@ -202,7 +202,14 @@ function validateSite(name, url) {
  * Handle toggle enable/disable
  */
 async function handleToggle(id, enabled) {
-  await updateSearchSite(id, { enabled });
+  try {
+    await updateSearchSite(id, { enabled });
+  } catch (err) {
+    console.error('Failed to toggle site:', err);
+    showError('Failed to update site. Please try again.');
+    // Reload to reset UI state
+    await loadSites();
+  }
 }
 
 /**
@@ -253,7 +260,14 @@ async function handleDrop(e) {
   }
 
   // Update order in storage
-  await updateOrder();
+  try {
+    await updateOrder();
+  } catch (err) {
+    console.error('Failed to update order:', err);
+    showError('Failed to save new order. Please try again.');
+    // Reload to reset UI state
+    await loadSites();
+  }
 }
 
 /**
