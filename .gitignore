@@ -37,3 +37,6 @@ yarn-error.log*
 # Temporary files
 tmp/
 temp/
+
+# Icon source files
+icons/binoculars-source.png
