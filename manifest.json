@@ -3,6 +3,7 @@
   "name": "SearchScout",
   "version": "1.0.0",
   "description": "Search selected text across multiple engines",
+  "minimum_chrome_version": "92",
   "permissions": [
     "contextMenus",
     "storage"
