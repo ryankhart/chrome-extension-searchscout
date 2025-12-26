@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Custom Search",
+  "name": "SearchScout",
   "version": "1.0.0",
-  "description": "Search selected text across multiple customizable search engines",
+  "description": "Search selected text across multiple engines",
   "permissions": [
     "contextMenus",
     "storage"
