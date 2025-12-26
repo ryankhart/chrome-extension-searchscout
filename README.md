@@ -5,8 +5,7 @@ A Chrome extension that adds a right-click context menu to search selected text 
 ## Features
 
 - **Right-click search**: Select any text on a webpage and search it instantly
-- **Multiple search engines**: Choose from a submenu of search sites
-- **Flat menu mode**: Optional setting to show each site as a top-level context menu item (disabled by default)
+- **Smart menu**: Automatically uses single top-level item for one site, nested menu for multiple
 - **Pre-configured defaults**: Google, DuckDuckGo, Bing, Wikipedia, GitHub, Stack Overflow, YouTube
 - **Fully customizable**: Add your own search sites with `%s` placeholder for search terms
 - **Enable/disable sites**: Toggle visibility of any search engine
@@ -27,26 +26,27 @@ A Chrome extension that adds a right-click context menu to search selected text 
 
 1. Select any text on a webpage
 2. Right-click to open the context menu
-3. Hover over "Search for [selected text]"
-4. Click on your preferred search engine
+3. Click your search option:
+   - **One enabled site**: Direct top-level item (e.g., "Search Google for...")
+   - **Multiple enabled sites**: Nested submenu under "Search for..."
 
 ### Managing Search Sites
 
 1. Click the extension icon in the toolbar
 2. From the popup, you can:
-   - **Flat menu**: Toggle to show each site as a top-level menu item (instead of nested submenu)
    - **Add**: Click the + button to add a new search site
    - **Edit**: Click the pencil icon to modify a site
    - **Delete**: Click the X icon to remove custom sites (defaults cannot be deleted)
    - **Toggle**: Use the switch to enable/disable a site
    - **Reorder**: Drag and drop sites to change their order
 
-### Menu Modes
+### Smart Menu Behavior
 
-- **Nested (default)**: All search sites appear under a single "Search for..." submenu
-- **Flat**: Each search site appears as a top-level menu item like "Search Google for..."
+The extension automatically adapts the context menu structure:
+- **1 enabled site**: Shows as a single top-level menu item (cleanest UX, no nesting)
+- **2+ enabled sites**: Groups them under a "Search for..." submenu
 
-Toggle between modes using the "Flat menu" switch in the popup.
+**Note for Edge users**: Microsoft Edge automatically groups extension menu items under the extension name, adding one level of nesting regardless of this behavior.
 
 ### Adding Custom Search Sites
 
