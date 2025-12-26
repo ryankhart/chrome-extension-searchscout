@@ -6,6 +6,7 @@ A Chrome extension that adds a right-click context menu to search selected text 
 
 - **Right-click search**: Select any text on a webpage and search it instantly
 - **Multiple search engines**: Choose from a submenu of search sites
+- **Flat menu mode**: Optional setting to show each site as a top-level context menu item (disabled by default)
 - **Pre-configured defaults**: Google, DuckDuckGo, Bing, Wikipedia, GitHub, Stack Overflow, YouTube
 - **Fully customizable**: Add your own search sites with `%s` placeholder for search terms
 - **Enable/disable sites**: Toggle visibility of any search engine
@@ -33,11 +34,19 @@ A Chrome extension that adds a right-click context menu to search selected text 
 
 1. Click the extension icon in the toolbar
 2. From the popup, you can:
+   - **Flat menu**: Toggle to show each site as a top-level menu item (instead of nested submenu)
    - **Add**: Click the + button to add a new search site
    - **Edit**: Click the pencil icon to modify a site
    - **Delete**: Click the X icon to remove custom sites (defaults cannot be deleted)
    - **Toggle**: Use the switch to enable/disable a site
    - **Reorder**: Drag and drop sites to change their order
+
+### Menu Modes
+
+- **Nested (default)**: All search sites appear under a single "Search for..." submenu
+- **Flat**: Each search site appears as a top-level menu item like "Search Google for..."
+
+Toggle between modes using the "Flat menu" switch in the popup.
 
 ### Adding Custom Search Sites
 
