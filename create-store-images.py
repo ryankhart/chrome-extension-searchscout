@@ -17,8 +17,8 @@ ACCENT_COLOR = (59, 130, 246)    # Blue accent
 SHADOW_OFFSET = 15
 SHADOW_BLUR = 30
 PADDING = 60  # Reduced padding for larger screenshots
-ANNOTATION_WIDTH = 240  # Reduced annotation width
-GAP = 50  # Gap between screenshot and annotation
+ANNOTATION_WIDTH = 340  # Annotation width for large text
+GAP = 40  # Gap between screenshot and annotation
 
 def create_gradient_background(width, height):
     """Create a subtle gradient background"""
@@ -153,20 +153,27 @@ def create_store_image(screenshot_path, output_path, annotation=None, annotation
     if annotation:
         draw = ImageDraw.Draw(background)
 
-        # Load fonts - using Bahnschrift for modern, geometric look
+        # Load fonts - Bahnschrift for title, Cambria for subtitle
         try:
-            title_font = ImageFont.truetype("bahnschrift.ttf", 44)
-            subtitle_font = ImageFont.truetype("bahnschrift.ttf", 24)
+            title_font = ImageFont.truetype("bahnschrift.ttf", 72)
         except:
             try:
-                title_font = ImageFont.truetype("segoeui.ttf", 42)
-                subtitle_font = ImageFont.truetype("segoeui.ttf", 24)
+                title_font = ImageFont.truetype("segoeui.ttf", 72)
             except:
                 try:
-                    title_font = ImageFont.truetype("arial.ttf", 42)
-                    subtitle_font = ImageFont.truetype("arial.ttf", 24)
+                    title_font = ImageFont.truetype("arial.ttf", 72)
                 except:
                     title_font = ImageFont.load_default()
+
+        try:
+            subtitle_font = ImageFont.truetype("seguili.ttf", 42)  # Segoe UI Light Italic
+        except:
+            try:
+                subtitle_font = ImageFont.truetype("segoeuii.ttf", 42)  # Segoe UI Italic
+            except:
+                try:
+                    subtitle_font = ImageFont.truetype("ariali.ttf", 42)
+                except:
                     subtitle_font = ImageFont.load_default()
 
         # Parse annotation (title and optional subtitle)
@@ -177,28 +184,43 @@ def create_store_image(screenshot_path, output_path, annotation=None, annotation
             title = annotation
             subtitle = ''
 
-        # Calculate annotation position
+        # Calculate annotation x position
         if annotation_position == 'right':
             ann_x = x + screenshot_with_shadow.width + GAP
         else:
             ann_x = combo_start_x
 
-        ann_y = OUTPUT_HEIGHT // 2 - 60
+        # Line height settings
+        title_line_height = 85
+        subtitle_line_height = 55
+        title_subtitle_gap = 10
 
-        # Draw title
-        title_bbox = draw.textbbox((0, 0), title, font=title_font)
-        title_width = title_bbox[2] - title_bbox[0]
+        # Word wrap title (calculate lines first)
+        title_words = title.split()
+        title_lines = []
+        current_line = []
+        title_max_width = ANNOTATION_WIDTH - 20
 
-        # Draw title with shadow
-        draw.text((ann_x + 2, ann_y + 2), title, fill=(0, 0, 0, 150), font=title_font)
-        draw.text((ann_x, ann_y), title, fill=(255, 255, 255, 255), font=title_font)
+        for word in title_words:
+            current_line.append(word)
+            test_line = ' '.join(current_line)
+            bbox = draw.textbbox((0, 0), test_line, font=title_font)
+            if bbox[2] - bbox[0] > title_max_width:
+                if len(current_line) > 1:
+                    current_line.pop()
+                    title_lines.append(' '.join(current_line))
+                    current_line = [word]
+                else:
+                    title_lines.append(word)
+                    current_line = []
 
-        # Draw subtitle if provided
+        if current_line:
+            title_lines.append(' '.join(current_line))
+
+        # Word wrap subtitle (calculate lines first)
+        subtitle_lines = []
         if subtitle:
-            sub_y = ann_y + 60
-            # Word wrap subtitle
             words = subtitle.split()
-            lines = []
             current_line = []
             max_width = ANNOTATION_WIDTH - 20
 
@@ -209,18 +231,33 @@ def create_store_image(screenshot_path, output_path, annotation=None, annotation
                 if bbox[2] - bbox[0] > max_width:
                     if len(current_line) > 1:
                         current_line.pop()
-                        lines.append(' '.join(current_line))
+                        subtitle_lines.append(' '.join(current_line))
                         current_line = [word]
                     else:
-                        lines.append(word)
+                        subtitle_lines.append(word)
                         current_line = []
 
             if current_line:
-                lines.append(' '.join(current_line))
+                subtitle_lines.append(' '.join(current_line))
 
-            # Draw wrapped lines
-            for i, line in enumerate(lines):
-                line_y = sub_y + i * 35
+        # Calculate total height and center vertically
+        title_height = len(title_lines) * title_line_height
+        subtitle_height = len(subtitle_lines) * subtitle_line_height if subtitle_lines else 0
+        gap_height = title_subtitle_gap if subtitle_lines else 0
+        total_height = title_height + gap_height + subtitle_height
+        ann_y = (OUTPUT_HEIGHT - total_height) // 2
+
+        # Draw title lines with shadow
+        for i, line in enumerate(title_lines):
+            line_y = ann_y + i * title_line_height
+            draw.text((ann_x + 2, line_y + 2), line, fill=(0, 0, 0, 150), font=title_font)
+            draw.text((ann_x, line_y), line, fill=(255, 255, 255, 255), font=title_font)
+
+        # Draw subtitle lines
+        if subtitle_lines:
+            sub_y = ann_y + title_height + title_subtitle_gap
+            for i, line in enumerate(subtitle_lines):
+                line_y = sub_y + i * subtitle_line_height
                 draw.text((ann_x + 2, line_y + 2), line, fill=(0, 0, 0, 100), font=subtitle_font)
                 draw.text((ann_x, line_y), line, fill=(200, 200, 200, 255), font=subtitle_font)
 
