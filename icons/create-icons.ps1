@@ -10,36 +10,59 @@ function Create-Icon {
     # Blue background
     $graphics.Clear([System.Drawing.Color]::FromArgb(26, 115, 232))
 
-    # Calculate dimensions
-    $lensRadius = $size * 0.18
-    $lensDiameter = $lensRadius * 2
-    $strokeWidth = [Math]::Max(2, $size / 14)
-    $bridgeHeight = [Math]::Max(3, $size * 0.08)
+    # Calculate dimensions for top-down binoculars view
+    $tubeWidth = [Math]::Max(6, $size * 0.22)
+    $tubeHeight = [Math]::Max(12, $size * 0.65)
+    $cornerRadius = [Math]::Max(3, $size * 0.08)
+    $spacing = [Math]::Max(2, $size * 0.06)
 
-    # Left lens center at (35%, 50%)
-    $leftX = $size * 0.35 - $lensRadius
-    $leftY = $size * 0.50 - $lensRadius
+    # Center the binoculars
+    $totalWidth = ($tubeWidth * 2) + $spacing
+    $startX = ($size - $totalWidth) / 2
+    $startY = ($size - $tubeHeight) / 2
 
-    # Right lens center at (65%, 50%)
-    $rightX = $size * 0.65 - $lensRadius
-    $rightY = $size * 0.50 - $lensRadius
+    # Calculate positions
+    $rightX = $startX + $tubeWidth + $spacing
+    $eyepieceHeight = [Math]::Max(2, $size * 0.08)
+    $bottomY = $startY + $tubeHeight - $eyepieceHeight
 
-    # Draw white lens outlines
-    $whitePen = New-Object System.Drawing.Pen([System.Drawing.Color]::White, $strokeWidth)
-    $whitePen.StartCap = 'Round'
-    $whitePen.EndCap = 'Round'
-    $graphics.DrawEllipse($whitePen, $leftX, $leftY, $lensDiameter, $lensDiameter)
-    $graphics.DrawEllipse($whitePen, $rightX, $rightY, $lensDiameter, $lensDiameter)
+    # Draw left tube (orange rounded rectangle)
+    $leftRect = New-Object System.Drawing.RectangleF($startX, $startY, $tubeWidth, $tubeHeight)
+    $leftPath = New-Object System.Drawing.Drawing2D.GraphicsPath
+    $diameter = $cornerRadius * 2
+    $leftPath.AddArc($leftRect.X, $leftRect.Y, $diameter, $diameter, 180, 90)
+    $leftPath.AddArc($leftRect.Right - $diameter, $leftRect.Y, $diameter, $diameter, 270, 90)
+    $leftPath.AddArc($leftRect.Right - $diameter, $leftRect.Bottom - $diameter, $diameter, $diameter, 0, 90)
+    $leftPath.AddArc($leftRect.X, $leftRect.Bottom - $diameter, $diameter, $diameter, 90, 90)
+    $leftPath.CloseFigure()
 
-    # Draw orange bridge connecting the lenses
+    # Draw right tube (orange rounded rectangle)
+    $rightRect = New-Object System.Drawing.RectangleF($rightX, $startY, $tubeWidth, $tubeHeight)
+    $rightPath = New-Object System.Drawing.Drawing2D.GraphicsPath
+    $rightPath.AddArc($rightRect.X, $rightRect.Y, $diameter, $diameter, 180, 90)
+    $rightPath.AddArc($rightRect.Right - $diameter, $rightRect.Y, $diameter, $diameter, 270, 90)
+    $rightPath.AddArc($rightRect.Right - $diameter, $rightRect.Bottom - $diameter, $diameter, $diameter, 0, 90)
+    $rightPath.AddArc($rightRect.X, $rightRect.Bottom - $diameter, $diameter, $diameter, 90, 90)
+    $rightPath.CloseFigure()
+
+    # Fill tubes with orange
     $orangeBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(255, 107, 53))
-    $bridgeX = $size * 0.35 + $lensRadius
-    $bridgeY = $size * 0.50 - ($bridgeHeight / 2)
-    $bridgeWidth = ($size * 0.65) - ($size * 0.35) - ($lensRadius * 2)
-    $graphics.FillRectangle($orangeBrush, $bridgeX, $bridgeY, $bridgeWidth, $bridgeHeight)
+    $graphics.FillPath($orangeBrush, $leftPath)
+    $graphics.FillPath($orangeBrush, $rightPath)
 
-    $whitePen.Dispose()
+    # Add white eyepiece rings at the top
+    $whiteBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
+    $graphics.FillRectangle($whiteBrush, $startX, $startY, $tubeWidth, $eyepieceHeight)
+    $graphics.FillRectangle($whiteBrush, $rightX, $startY, $tubeWidth, $eyepieceHeight)
+
+    # Add white objective rings at the bottom
+    $graphics.FillRectangle($whiteBrush, $startX, $bottomY, $tubeWidth, $eyepieceHeight)
+    $graphics.FillRectangle($whiteBrush, $rightX, $bottomY, $tubeWidth, $eyepieceHeight)
+
     $orangeBrush.Dispose()
+    $whiteBrush.Dispose()
+    $leftPath.Dispose()
+    $rightPath.Dispose()
 
     $graphics.Dispose()
     $bitmap.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
